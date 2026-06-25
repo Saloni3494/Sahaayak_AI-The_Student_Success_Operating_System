@@ -33,6 +33,30 @@ logger = logging.getLogger(__name__)
 
 class KnowledgeGraphService:
 
+    async def query_career_requirements(self, career_id: str) -> List[str]:
+        """Query Neo4j for skills required by a career path."""
+        try:
+            driver = neo4j_manager.get_driver()
+            query = """
+            MATCH (c:Career {id: $career_id})-[:REQUIRES]->(s:Skill)
+            RETURN s.name AS skill_name
+            """
+            async with driver.session() as session:
+                result = await session.run(query, career_id=career_id)
+                records = await result.data()
+            if records:
+                return [r["skill_name"] for r in records if r.get("skill_name")]
+        except Exception as e:
+            logger.warning(f"Failed to query Neo4j for career requirements: {e}")
+        
+        # Fallback list based on career_id string representation
+        id_lower = str(career_id).lower()
+        is_ml = "ml" in id_lower or "ai" in id_lower or "data" in id_lower or "machine" in id_lower
+        if is_ml:
+            return ["Python", "Machine Learning", "Deep Learning", "SQL", "TensorFlow"]
+        else:
+            return ["React", "JavaScript", "DSA", "System Design", "Git"]
+
     async def generate_student_graph(self, db: AsyncSession, student_id: str) -> Dict[str, Any]:
         """
         Query the student's real-time state from PostgreSQL and sync it into Neo4j
