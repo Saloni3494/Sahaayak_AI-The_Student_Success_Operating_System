@@ -44,3 +44,10 @@ Thumbs.db
 .idea/
 .gemini/
 .agents/
+
+# Vercel Build Output
+.vercel/
+**/ .vercel/
+dist/
+build/
+.output/
