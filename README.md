@@ -97,14 +97,13 @@ Sahaayak AI is built on seven interconnected innovation layers that work in unis
 ├───────────────────────────────────┴─────────────────────────────────────┤
 │                       Parent Guidance Assistant                         │
 └─────────────────────────────────────────────────────────────────────────┘
-```
-
-### AI Mentor Companion
+```### AI Mentor Companion
 
 The **AI Mentor Companion** provides 24/7 personalized, context-aware mentoring. Rather than serving as a generic chatbot, it operates on a Retrieval-Augmented Generation (RAG) pipeline coupled with the student's live **Digital Twin** context.
 - **Context-Aware Responses**: Automatically weights queries with the student's current CGPA, active goals, skill gaps, and risk factors.
-- **Conversational Memory**: Maintains a multi-turn history to guide students through long-term academic decisions.
-- **Multilingual RAG**: Utilizes localized vector search to fetch university resources, policies, and program details in the student's preferred language.
+- **Conversational Memory**: Maintains a multi-turn history backed by a Redis-cached session-manager to guide students through long-term academic decisions without data loss.
+- **Multilingual Support**: Supports 8 Indian languages (Hindi, Marathi, Tamil, Telugu, Kannada, Gujarati, Bengali, English) via a real-time translation loop. Client inputs are converted to English for precise vector retrieval and logic evaluation, and the generated response is then translated back to the target language and streamed to the client.
+- **Speech Synthesis (TTS) Locale Alignment**: Translates spoken outputs using client-side Speech Synthesis, dynamically adjusting the voice engine's BCP 47 locale codes (e.g., `mr-IN` for Marathi, `hi-IN` for Hindi) to match the selected language and prevent pronunciation failures.
 
 ### Student Digital Twin
 
@@ -139,11 +138,13 @@ The **Social Capital Engine** bridges the networking gap by connecting students 
 - **Mentor Matching**: Ranks mentors based on industry alignment, shared background (e.g., alumni from the same town), and conversational compatibility.
 - **Peer Cohort Formation**: Groups students working on similar career roadmaps to encourage collaborative learning.
 
-### Parent Guidance Assistant
+### Parent & Real-Time Voice Companion
 
-The **Parent Guidance Assistant** bridges the gap between the university and the student's home.
-- **Multilingual Voice Updates**: Translates complex academic progress and financial aid milestones into simple, voice-synthesized updates in regional languages.
-- **Guidance Alignment**: Empowers parents with context on how to support their child's career aspirations, removing educational barriers.
+The **Real-Time AI Voice Companion** (accessible via the floating widget or specialized routes) bridges the gap between the university, student, and their parents by supporting natural, continuous multilingual voice interactions.
+- **Persistent WebSocket Audio Streaming**: Streams raw, continuous binary PCM audio packets from the browser microphone to a stateful FastAPI server, which returns synthesized TTS audio stream responses.
+- **Voice Activity Detection (VAD)**: Utilizes a custom RMS energy thresholding algorithm to analyze audio buffers, segment silence thresholds, and isolate voice boundaries.
+- **Real ASR & TTS Inference**: Incorporates automatic Speech-to-Text (using local `faster-whisper` or OpenAI API fallbacks) and Text-to-Speech (using `edge-tts` for regional languages).
+- **Emotion & Sentiment Context**: Computes and tracks real-time sentiment scores (Positive, Neutral, Negative) during audio processing, updating the conversation context to provide emotional support.
 
 ---
 
@@ -365,10 +366,13 @@ Follow these steps to run the complete Sahaayak AI stack locally.
    ```
 
 4. **Set up the Database**:
-   Make sure PostgreSQL is running, then run the database migrations and seed initial career/course records:
+   Make sure PostgreSQL is running, then run the database migrations, set up voice helper schemas, and seed initial career/course records:
    ```bash
    # Runs tables creation and migrations
    alembic upgrade head
+   
+   # Appends custom voice companion columns/tables
+   python add_voice_cols.py
    
    # Seeds the database with default career paths, mentors, and opportunities
    python seed_data.py
