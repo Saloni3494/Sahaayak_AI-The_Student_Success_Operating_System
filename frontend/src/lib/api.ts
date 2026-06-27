@@ -1,6 +1,14 @@
 import { toast } from "sonner";
 
-export const API_BASE_URL = "http://localhost:8000/api/v1";
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000/api/v1";
+
+export const getWebSocketUrl = (path: string): string => {
+  if (API_BASE_URL.startsWith("http")) {
+    return API_BASE_URL.replace(/^http/, "ws") + path;
+  }
+  const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+  return `${protocol}//${window.location.host}${API_BASE_URL}${path}`;
+};
 
 const safeLocalStorage = {
   getItem: (key: string): string | null => {

@@ -41,7 +41,7 @@ import ReactFlow, {
 } from "reactflow";
 import "reactflow/dist/style.css";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { KnowledgeGraphAPI } from "@/lib/api";
+import { KnowledgeGraphAPI, getWebSocketUrl } from "@/lib/api";
 import { useUser } from "@/hooks/useUser";
 import { toast } from "sonner";
 
@@ -522,7 +522,7 @@ function KnowledgeGraph() {
   // Setup WebSockets for Real-Time Invalidations
   useEffect(() => {
     if (!studentId) return;
-    const wsUrl = `ws://localhost:8000/api/v1/knowledge-graph/ws/knowledge-graph/${studentId}`;
+    const wsUrl = getWebSocketUrl(`/knowledge-graph/ws/knowledge-graph/${studentId}`);
     console.log("Connecting to Knowledge Graph WebSocket...", wsUrl);
     const ws = new WebSocket(wsUrl);
 

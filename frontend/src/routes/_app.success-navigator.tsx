@@ -32,7 +32,7 @@ const SafeCountUp = (CountUp as any).default || CountUp;
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { SuccessAPI } from "@/lib/api";
+import { SuccessAPI, getWebSocketUrl } from "@/lib/api";
 import { useUser } from "@/hooks/useUser";
 import { toast } from "sonner";
 import {
@@ -134,7 +134,7 @@ function SuccessNavigator() {
   useEffect(() => {
     if (!studentId) return;
 
-    const wsUrl = `ws://localhost:8000/api/v1/success/ws/success/${studentId}`;
+    const wsUrl = getWebSocketUrl(`/success/ws/success/${studentId}`);
     const socket = new WebSocket(wsUrl);
 
     socket.onopen = () => {

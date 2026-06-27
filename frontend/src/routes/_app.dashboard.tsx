@@ -41,7 +41,7 @@ import {
   YAxis,
 } from "recharts";
 import { useEffect, useMemo, useState, useRef } from "react";
-import { DashboardAPI, OnboardingAPI, TwinAPI, ChatAPI } from "@/lib/api";
+import { DashboardAPI, OnboardingAPI, TwinAPI, ChatAPI, getWebSocketUrl } from "@/lib/api";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useUser, useInvalidateUser } from "@/hooks/useUser";
 import { toast } from "sonner";
@@ -348,7 +348,7 @@ function Dashboard() {
 
     const connectChatWS = () => {
       chatWs.current = new WebSocket(
-        `ws://localhost:8000/api/v1/mentor/ws/${activeChatId}?student_id=${user.id}`,
+        getWebSocketUrl(`/mentor/ws/${activeChatId}?student_id=${user.id}`),
       );
 
       heartbeatInterval = setInterval(() => {

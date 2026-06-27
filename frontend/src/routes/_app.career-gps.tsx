@@ -26,7 +26,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import ReactFlow, { Background, Controls } from "reactflow";
 import "reactflow/dist/style.css";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { CareerAPI } from "@/lib/api";
+import { CareerAPI, getWebSocketUrl } from "@/lib/api";
 import { toast } from "sonner";
 import { useUser } from "@/hooks/useUser";
 
@@ -127,7 +127,7 @@ function CareerGPS() {
   useEffect(() => {
     if (!studentId) return;
 
-    const wsUrl = `ws://localhost:8000/api/v1/career-gps/ws/career-gps/${studentId}`;
+    const wsUrl = getWebSocketUrl(`/career-gps/ws/career-gps/${studentId}`);
     const socket = new WebSocket(wsUrl);
 
     socket.onopen = () => {

@@ -20,7 +20,7 @@ import {
   VolumeX,
 } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
-import { ChatAPI } from "@/lib/api";
+import { ChatAPI, getWebSocketUrl } from "@/lib/api";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { useUser } from "@/hooks/useUser";
@@ -205,7 +205,7 @@ function AIMentor() {
       wsConversationId.current = activeConversationId;
 
       ws.current = new WebSocket(
-        `ws://localhost:8000/api/v1/mentor/ws/${activeConversationId}?student_id=${studentId}`,
+        getWebSocketUrl(`/mentor/ws/${activeConversationId}?student_id=${studentId}`),
       );
 
       heartbeatCheckInterval = setInterval(() => {
