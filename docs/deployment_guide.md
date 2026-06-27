@@ -66,11 +66,11 @@ Render runs the FastAPI application. We will use Render's native Python runtime.
    * **Root Directory**: `backend` *(Ensure this is pointing to your backend subdirectory)*
    * **Build Command**: 
      ```bash
-     pip install -r requirements.txt && alembic upgrade head && python add_voice_cols.py
+     pip install -r requirements.txt
      ```
    * **Start Command**: 
      ```bash
-     uvicorn app.main:app --host 0.0.0.0 --port $PORT
+     alembic upgrade head && python add_voice_cols.py && uvicorn app.main:app --host 0.0.0.0 --port $PORT
      ```
 4. Click **Advanced** and add the following **Environment Variables**:
 
