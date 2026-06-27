@@ -16,6 +16,20 @@ async def lifespan(app: FastAPI):
     # Startup log
     logger.info("Starting up Sahaayak AI backend...")
 
+    # Auto-create tables for SQLite deployments
+    from app.db.session import engine
+    from app.models.base import Base
+    import pkgutil
+    import importlib
+    
+    # Import all modules so Base.metadata knows about them
+    for _, module_name, _ in pkgutil.iter_modules(app.models.__path__):
+        if module_name != "base":
+            importlib.import_module(f"app.models.{module_name}")
+            
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+    logger.info("Database tables initialized successfully")
         
     # Start APScheduler
     from apscheduler.schedulers.asyncio import AsyncIOScheduler
