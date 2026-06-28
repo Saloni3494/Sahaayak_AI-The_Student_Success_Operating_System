@@ -46,8 +46,9 @@ Thumbs.db
 .agents/
 
 # Vercel Build Output
+frontend/.vercel/
 .vercel/
-**/ .vercel/
+**/.vercel/
 dist/
 build/
 .output/

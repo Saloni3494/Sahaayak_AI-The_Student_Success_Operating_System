@@ -21,9 +21,10 @@ async def lifespan(fastapi_app: FastAPI):
     from app.models.base import Base
     import pkgutil
     import importlib
+    import app.models as db_models
     
     # Import all modules so Base.metadata knows about them
-    for _, module_name, _ in pkgutil.iter_modules(app.models.__path__):
+    for _, module_name, _ in pkgutil.iter_modules(db_models.__path__):
         if module_name != "base":
             importlib.import_module(f"app.models.{module_name}")
             
