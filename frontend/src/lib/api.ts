@@ -74,7 +74,7 @@ export async function fetchAPI<T = any>(
   endpoint: string,
   options: RequestOptions = {},
 ): Promise<APIResponse<T>> {
-  const { timeout = 10000, ...fetchOptions } = options;
+  const { timeout = 60000, ...fetchOptions } = options;
 
   // Retrieve token from localStorage
   const token =
